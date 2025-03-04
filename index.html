@@ -2,30 +2,94 @@
 <html lang="en">
 
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Kanbar Board</title>
-    <link rel="stylesheet" href="style.css">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Kanbar Board</title>
+  <link rel="stylesheet" href="style.css" />
 </head>
 
 <body>
-    <!-- Navbar design -->
-    <nav class="navbar">
-        <button class="add-new-board">
-            <img src="./assets/add-board.svg" alt="Add board icon" class="add-board-icon">
-            Add Board
-        </button>
-        
-        <div class="switch-theme">
+
+  <nav class="navbar">
+    <button class="add-new-board">
+      <img src="./assets/add-board.svg" alt="" />
+      <p>Add board</p>
+    </button>
+
+    <button class="switch-theme"></button>
+  </nav>
+
+  <main>
+
+    <div class="board">
+
+      <div class="board-details">
+        <div class="board-heading">
+          <div class="board-logo"></div>
+           <p class="board-name">To Do</p>
+           <p class="board-task-status">4</p>
         </div>
-    </nav>
+        <div class="board-description">Lorem ipsum dolor sit amet.</div>
+      </div>
 
-    <!-- Main content design -->
-    <main></main>
+      <div class="board-task-items">
+
+        <div class="single-task-item">
+          <div class="single-task-heading">
+            <div class="single-task-logo"></div>
+            <div class="single-task-type">Draft</div>
+            <div class="task-edit-delete">
+                <img src="./assets/edit-task-item.svg" alt="" id="edit-task-item">
+                <img src="./assets/delete-task-item.svg" alt="" id="delete-task-item">
+            </div>
+          </div>
+          <p class="single-task-content">Task 1</p>
+        </div>
+
+      </div>
+
+      <button class="add-task-item">
+        <img src="./assets/add-task-item.svg" alt="add task item" />
+        <p>Add item</p>
+      </button>
+
+    </div>
+
+
+      <!-- Adding new board popup -->
+
+
+      <div class="modal">
+        <div class="modal-header">
+            <span>Title</span>
+            <span class="close">&times;</span>
+        </div>
+        <label for="name">Name</label>
+        <input type="text" id="name">
+        
+        <label>Colors</label>
+        <div class="colors">
+            <button class="color-option" style="background: #2bad00;"></button>
+            <button class="color-option" style="background: #ffd000;"></button>
+            <button class="color-option" style="background: #ffc79a;"></button>
+            <button class="color-option" style="background: #b67471;"></button>
+            <button class="color-option" style="background: #be82e0;"></button>
+        </div>
+        
+        <label for="description">Description</label>
+        <input id="description"></input>
+        
+        <div class="buttons">
+            <button class="cancel">Cancel</button>
+            <button class="submit">Submit</button>
+        </div>
+    </div>
+
+  </main>
 
 
 
-    <script src="script.js"></script>
+  <script src="script.js"></script>
 </body>
 
 </html>
