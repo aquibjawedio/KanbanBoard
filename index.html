@@ -26,8 +26,8 @@
       <div class="board-details">
         <div class="board-heading">
           <div class="board-logo"></div>
-           <p class="board-name">To Do</p>
-           <p class="board-task-status">4</p>
+          <p class="board-name">To Do</p>
+          <p class="board-task-status">4</p>
         </div>
         <div class="board-description">Lorem ipsum dolor sit amet.</div>
       </div>
@@ -39,8 +39,8 @@
             <div class="single-task-logo"></div>
             <div class="single-task-type">Draft</div>
             <div class="task-edit-delete">
-                <img src="./assets/edit-task-item.svg" alt="" id="edit-task-item">
-                <img src="./assets/delete-task-item.svg" alt="" id="delete-task-item">
+              <img src="./assets/edit-task-item.svg" alt="" id="edit-task-item">
+              <img src="./assets/delete-task-item.svg" alt="" id="delete-task-item">
             </div>
           </div>
           <p class="single-task-content">Task 1</p>
@@ -48,41 +48,65 @@
 
       </div>
 
-      <button class="add-task-item">
-        <img src="./assets/add-task-item.svg" alt="add task item" />
-        <p>Add item</p>
-      </button>
+      <div class="add-task-item">
+        <div class="add-task-btn">
+          <img src="./assets/add-task-item.svg" alt="add task item" class="add-task-btn" />
+          <p>Add item</p>
+        </div>
+        <div class="board-edit-delete">
+          <img src="./assets/edit-task-item.svg" alt="" id="edit-board">
+          <img src="./assets/delete-task-item.svg" alt="" id="delete-board">
+        </div>
+      </div>
 
     </div>
 
+    <!-- Adding new task item modal -->
+     <div class="task-modal">
 
-      <!-- Adding new board popup -->
+      <div class="task-modal-header">
+        <span>Task Item Title</span>
+        <span class="task-modal-close">&times;</span>
+      </div>
+      <label for="name">Name</label>
+      <input type="text" id="task-modal-name" placeholder="Enter task name">
+
+      <label for="description">Description</label>
+      <input id="task-modal-description" placeholder="Enter task description"></input>
+
+      <div class="task-modal-buttons">
+        <button class="task-modal-cancel">Cancel</button>
+        <button class="task-modal-submit">Submit</button>
+      </div>
+
+     </div>
 
 
-      <div class="modal">
-        <div class="modal-header">
-            <span>Title</span>
-            <span class="close">&times;</span>
-        </div>
-        <label for="name">Name</label>
-        <input type="text" id="name">
-        
-        <label>Colors</label>
-        <div class="colors">
-            <button class="color-option" style="background: #2bad00;"></button>
-            <button class="color-option" style="background: #ffd000;"></button>
-            <button class="color-option" style="background: #ffc79a;"></button>
-            <button class="color-option" style="background: #b67471;"></button>
-            <button class="color-option" style="background: #be82e0;"></button>
-        </div>
-        
-        <label for="description">Description</label>
-        <input id="description"></input>
-        
-        <div class="buttons">
-            <button class="cancel">Cancel</button>
-            <button class="submit">Submit</button>
-        </div>
+    <!-- Adding new board modal -->
+    <div class="board-modal">
+      <div class="board-modal-header">
+        <span>Board Title</span>
+        <span class="board-modal-close">&times;</span>
+      </div>
+      <label for="name">Name</label>
+      <input type="text" id="board-modal-name" placeholder="Enter board name">
+
+      <label>Colors</label>
+      <div class="board-modal-colors">
+        <button class="color-option" value="#2bad00" style="background: #2bad00;"></button>
+        <button class="color-option" value="#ffd000" style="background: #ffd000;"></button>
+        <button class="color-option" value="#ffc79a" style="background: #ffc79a;"></button>
+        <button class="color-option" value="#b67471" style="background: #b67471;"></button>
+        <button class="color-option" value="#be82e0" style="background: #be82e0;"></button>
+      </div>
+
+      <label for="description">Description</label>
+      <input id="board-modal-description" placeholder="Enter board description"></input>
+
+      <div class="board-modal-buttons">
+        <button class="board-modal-cancel">Cancel</button>
+        <button class="board-modal-submit">Submit</button>
+      </div>
     </div>
 
   </main>
