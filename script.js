@@ -76,11 +76,52 @@ function hideTaskModal() {
     document.querySelector(".task-modal").style.display = "none";
     document.getElementById("board-modal-name").value = "";
     document.getElementById("board-modal-description").value = "";
+
+    currentBoardId = null;
+    currentBoardIndex = -1;
+    currentTaskIndex = -1;
+    currentTaskId = null;
+
+    document.getElementById("task-modal-name").value = "";
+    document.getElementById("task-modal-description").value = "";
+
 }
 
 /* -------------------------- Board Modal Ends Here -------------------------- */
 
+// Updating single dom elelment
 
+
+function updateTaskInDOM(id, name, description, color, items) {
+    const elelment = document.getElementById(`${id}`);
+
+    if (!name && !description && !color) {
+        elelment.firstChild.firstChild.children[2].textContent = items;
+
+    }
+
+    else if (!id.includes('task')) {
+        elelment.firstChild.firstChild.firstChild.style.border = `2px solid ${color}`;
+        elelment.firstChild.firstChild.children[1].textContent = name;
+        elelment.firstChild.firstChild.nextSibling.textContent = description;
+
+    }
+    else {
+        elelment.firstChild.children[1].textContent = name;
+        elelment.lastChild.textContent = description;
+    }
+}
+
+
+
+
+
+
+
+
+
+
+/* -------------------------- Updating Single DOM Element Ends Here -------------------------- */
 
 
 
@@ -115,11 +156,9 @@ function storeNewBoard() {
     // Check if already created board exists
 
     let boardname = document.getElementById("board-modal-name").value.trim();
-    let boarddescription = document
-        .getElementById("board-modal-description")
-        .value.trim();
+    let boarddescription = document.getElementById("board-modal-description").value.trim();
 
-    if(!boardname || !boarddescription) return alert("Enter valid input")
+    if (!boardname || !boarddescription) return alert("Enter valid input")
 
     boards = JSON.parse(localStorage.getItem("boards")) || [];
 
@@ -128,6 +167,7 @@ function storeNewBoard() {
         boards[currentBoardIndex].boardDescription = boarddescription;
         boards[currentBoardIndex].boardLogo = boardlogo;
 
+        updateTaskInDOM(currentBoardId, boardname, boarddescription, boardlogo, null);
         // Set the currentId and index to default
         currentBoardId = null;
         currentBoardIndex = -1;
@@ -139,7 +179,7 @@ function storeNewBoard() {
             boardName: boardname,
             boardDescription: boarddescription,
             boardLogo: boardlogo,
-            boardTasks: ["Task1", "Task3", "Task2"],
+            boardTasks: [],
         };
 
         boards.push(board);
@@ -147,20 +187,11 @@ function storeNewBoard() {
 
 
 
-    localStorage.setItem("boards", JSON.stringify(boards));
+    updateLocalStorage();
+    // localStorage.setItem("boards", JSON.stringify(boards));
 
-    // const taskItem = {
-    //     itaskId: `${board.boardId}-task-${board.boardTasks.length}`,
-    //     taskName: "something",
-    //     taskDescription: "Nothing"
-    // }
-
-
-    // document.getElementById("board-modal-name").value = "";
-    // document.getElementById("board-modal-description").value = "";
-
-    hideBoardModal();
     loadSaveBoards();
+    hideBoardModal();
 
 }
 
@@ -174,12 +205,179 @@ function updateLocalStorage() {
 }
 
 
+
+
+
 /* ------------------------ Updating Board Ends Here ------------------ */
 
+/* Creating A New Board */
+
+
+document.querySelector('.task-modal-submit').addEventListener('click', storeNewTask);
+
+let currentTaskId = null;
+let currentTaskIndex = -1;
+
+
+function storeNewTask() {
+
+    let taskname = document.getElementById("task-modal-name").value.trim();
+    let taskdescription = document.getElementById("task-modal-description").value.trim();
+
+    if (!taskname || !taskdescription) return alert("Enter valid input");
+
+    boards = JSON.parse(localStorage.getItem("boards")) || [];
+
+
+    if (currentTaskIndex !== -1) {
+        boards[currentBoardIndex].boardTasks[currentTaskIndex].taskName = taskname;
+        boards[currentBoardIndex].boardTasks[currentTaskIndex].taskDescription = taskdescription;
+
+        updateTaskInDOM(currentTaskId, taskname, taskdescription, null, boards[currentBoardIndex].boardTasks.length);
+
+        currentTaskIndex = -1;
+        currentTaskId = null;
+    }
+
+    else {
+
+        let Task = {
+            taskId: `${boards[currentBoardIndex].boardId}-task-${boards[currentBoardIndex].boardTasks.length}`,
+            taskName: taskname,
+            taskDescription: taskdescription
+        }
+        boards[currentBoardIndex].boardTasks.push(Task);
+        updateTaskInDOM(currentBoardId, null, null, null, boards[currentBoardIndex].boardTasks.length)
+
+    }
+
+    updateLocalStorage();
+    loadSavedTasks();
+    hideTaskModal();
+}
+
+
+// Loading saved tasks in board
+
+
+function loadSavedTasks() {
+
+    boards = JSON.parse(localStorage.getItem("boards")) || [];
+
+    for (let i = 0; i < boards.length; i++) {
+
+        for (let j = 0; j < boards[i].boardTasks.length; j++) {
+
+            if (document.getElementById(`${boards[i].boardTasks[j].taskId}`) || boards.length == 0) {
+                continue;
+            }
+
+            const taskDiv = document.createElement("div");
+            taskDiv.classList.add("single-task-item");
+            taskDiv.setAttribute('id', boards[i].boardTasks[j].taskId);
+            taskDiv.setAttribute('draggable', 'true');
+
+            // Handling draggable or not
+
+            taskDiv.addEventListener('dragstart', () => {
+                taskDiv.classList.add('flying-item');
+            })
+            taskDiv.addEventListener('dragend', () => {
+                taskDiv.classList.remove('flying-item');
+            })
 
 
 
 
+
+
+
+
+
+            const taskHeadingDiv = document.createElement("div");
+            taskHeadingDiv.classList.add("single-task-heading");
+
+            const taskLogoDiv = document.createElement("div");
+            taskLogoDiv.classList.add("single-task-logo");
+
+            const taskTypeDiv = document.createElement("div");
+            taskTypeDiv.classList.add("single-task-type");
+            taskTypeDiv.textContent = boards[i].boardTasks[j].taskName
+
+            taskHeadingDiv.appendChild(taskLogoDiv);
+            taskHeadingDiv.appendChild(taskTypeDiv);
+
+            const taskEditDeleteDiv = document.createElement("div");
+            taskEditDeleteDiv.classList.add("task-edit-delete");
+
+            const editTaskImg = document.createElement("img");
+            editTaskImg.setAttribute('src', './assets/edit-task-item.svg');
+            editTaskImg.setAttribute('alt', 'edit-task');
+
+            // Editing task 
+
+            editTaskImg.addEventListener('click', () => {
+
+
+                displayTaskModal();
+
+                document.getElementById("task-modal-name").value = boards[i].boardTasks[j].taskName;
+                document.getElementById("task-modal-description").value = boards[i].boardTasks[j].taskDescription;
+
+
+                currentTaskIndex = j;
+                currentBoardId = boards[i].boardId;
+                currentBoardIndex = i;
+                currentTaskId = boards[i].boardTasks[j].taskId;
+            })
+
+            const deleteTaskImg = document.createElement("img");
+            deleteTaskImg.setAttribute('src', './assets/delete-task-item.svg');
+            deleteTaskImg.setAttribute('alt', 'delete-task');
+
+
+            deleteTaskImg.addEventListener('click', () => {
+
+                boards[i].boardTasks.splice(j, 1);
+
+                updateTaskInDOM(boards[i].boardId, null, null, null, boards[i].boardTasks.length);
+
+                updateLocalStorage();
+                loadSavedTasks();
+                taskDiv.remove();
+            });
+
+            taskEditDeleteDiv.appendChild(editTaskImg);
+            taskEditDeleteDiv.appendChild(deleteTaskImg);
+
+            taskHeadingDiv.appendChild(taskEditDeleteDiv);
+
+            taskDiv.appendChild(taskHeadingDiv);
+
+
+            // Task contenet showing
+
+            const taskDescriptionDiv = document.createElement("p");
+            taskDescriptionDiv.classList.add("single-task-content");
+            taskDescriptionDiv.textContent = boards[i].boardTasks[j].taskDescription;
+
+            taskDiv.appendChild(taskDescriptionDiv);
+
+
+            document.getElementById(`${boards[i].boardId}-task`).appendChild(taskDiv);
+
+
+        }
+    }
+
+
+}
+
+
+
+
+
+/* ------------------------ Updating Board Ends Here ------------------ */
 
 
 
@@ -197,6 +395,7 @@ function loadSaveBoards() {
     boards = JSON.parse(localStorage.getItem("boards")) || [];
 
     for (let i = 0; i < boards.length; i++) {
+
         if (document.getElementById(`${boards[i].boardId}`) || boards.length == 0) {
             continue;
         }
@@ -246,6 +445,27 @@ function loadSaveBoards() {
 
 
 
+        /* Appending task section in board */
+        const boardTaskItems = document.createElement('div');
+        boardTaskItems.classList.add('board-task-items');
+        boardTaskItems.setAttribute('id', `${boards[i].boardId}-task`);
+        boardDiv.appendChild(boardTaskItems);
+
+
+        boardDiv.addEventListener('dragover', (event) => {
+            event.preventDefault();
+
+            const flyingElement = document.querySelector('.flying-item');
+
+            boardDiv.appendChild(flyingElement);
+            updateLocalStorage();
+        })
+
+
+
+
+
+
 
 
 
@@ -259,8 +479,19 @@ function loadSaveBoards() {
         const addTaskBtnDiv = document.createElement('div');
         addTaskBtnDiv.classList.add('add-task-btn');
 
-        addTaskBtnDiv.addEventListener('click', displayTaskModal)
 
+
+
+
+        // Diplaying task item modal
+        addTaskBtnDiv.addEventListener('click', () => {
+
+            boards = JSON.parse(localStorage.getItem('boards'));
+            displayTaskModal();
+            currentBoardId = boards[i].boardId;
+            currentBoardIndex = i;
+
+        });
         const addTaskImg = document.createElement('img');
         addTaskImg.setAttribute('src', './assets/add-task-item.svg');
         addTaskImg.setAttribute('alt', 'add task item');
@@ -302,9 +533,7 @@ function loadSaveBoards() {
 
         function deleteBoardMethod() {
             boardDiv.remove();
-            boards = JSON.parse(localStorage.getItem('boards')).filter(board => {
-                return board.boardId != boardDiv.id;
-            })
+            boards.splice(i, 1);
             updateLocalStorage();
         }
 
@@ -321,11 +550,7 @@ function loadSaveBoards() {
 }
 
 loadSaveBoards();
+loadSavedTasks();
 
-setInterval(() => {
-    console.log(currentBoardId);
-    console.log(currentBoardIndex);
-
-}, 3000)
 
 /* ------------------------ Rendering all saved board Ends Here ------------------ */
