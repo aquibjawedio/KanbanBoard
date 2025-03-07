@@ -217,6 +217,7 @@ document.querySelector('.task-modal-submit').addEventListener('click', storeNewT
 
 let currentTaskId = null;
 let currentTaskIndex = -1;
+let draggedTask = null;
 
 
 function storeNewTask() {
@@ -267,8 +268,12 @@ function loadSavedTasks() {
     for (let i = 0; i < boards.length; i++) {
 
         for (let j = 0; j < boards[i].boardTasks.length; j++) {
+            
+            const taskId = boards[i].boardTasks[j] !== null ? boards[i].boardTasks[j].taskId : null;
 
-            if (document.getElementById(`${boards[i].boardTasks[j].taskId}`) || boards.length == 0) {
+            if(!taskId) continue;
+
+            if (document.getElementById(`${taskId}`) || boards.length == 0) {
                 continue;
             }
 
@@ -279,11 +284,19 @@ function loadSavedTasks() {
 
             // Handling draggable or not
 
-            taskDiv.addEventListener('dragstart', () => {
+
+
+            taskDiv.addEventListener('dragstart', (event) => {
+                draggedTask = {
+                    indexTask: j,
+                    indexBoard: i
+                };
                 taskDiv.classList.add('flying-item');
+
             })
             taskDiv.addEventListener('dragend', () => {
                 taskDiv.classList.remove('flying-item');
+                draggedTask = null;
             })
 
 
@@ -455,11 +468,31 @@ function loadSaveBoards() {
         boardDiv.addEventListener('dragover', (event) => {
             event.preventDefault();
 
-            const flyingElement = document.querySelector('.flying-item');
 
-            boardDiv.appendChild(flyingElement);
-            updateLocalStorage();
-        })
+        });
+
+        boardDiv.addEventListener('drop', (event) => {
+            event.preventDefault();
+
+            if (draggedTask) {
+
+
+                let indexTask = draggedTask.indexTask;
+                let indexBoard = draggedTask.indexBoard;
+
+                let task = boards[indexBoard].boardTasks.splice(indexTask, 1);
+
+
+
+                boards[i].boardTasks.push(task[0]);
+                
+                const flyingElement = document.querySelector('.flying-item');
+
+                boardDiv.appendChild(flyingElement);
+                updateLocalStorage();
+            }
+
+        });
 
 
 
