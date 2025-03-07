@@ -229,6 +229,12 @@ function storeNewTask() {
 
     boards = JSON.parse(localStorage.getItem("boards")) || [];
 
+    function uuidv4() {
+        return "10000000-1000-4000-8000-100000000000".replace(/[018]/g, c =>
+            (+c ^ crypto.getRandomValues(new Uint8Array(1))[0] & 15 >> +c / 4).toString(16)
+        );
+    }
+    
 
     if (currentTaskIndex !== -1) {
         boards[currentBoardIndex].boardTasks[currentTaskIndex].taskName = taskname;
@@ -243,7 +249,7 @@ function storeNewTask() {
     else {
 
         let Task = {
-            taskId: `${boards[currentBoardIndex].boardId}-task-${boards[currentBoardIndex].boardTasks.length}`,
+            taskId: `${boards[currentBoardIndex].boardId}-task-${uuidv4()}`,
             taskName: taskname,
             taskDescription: taskdescription
         }
@@ -268,10 +274,10 @@ function loadSavedTasks() {
     for (let i = 0; i < boards.length; i++) {
 
         for (let j = 0; j < boards[i].boardTasks.length; j++) {
-            
+
             const taskId = boards[i].boardTasks[j] !== null ? boards[i].boardTasks[j].taskId : null;
 
-            if(!taskId) continue;
+            if (!taskId) continue;
 
             if (document.getElementById(`${taskId}`) || boards.length == 0) {
                 continue;
@@ -481,11 +487,14 @@ function loadSaveBoards() {
                 let indexBoard = draggedTask.indexBoard;
 
                 let task = boards[indexBoard].boardTasks.splice(indexTask, 1);
+                // task[0].taskId = `${boards[i].boardId}-task-${boards[i].boardTasks.length}`;
+
+
 
 
 
                 boards[i].boardTasks.push(task[0]);
-                
+
                 const flyingElement = document.querySelector('.flying-item');
 
                 boardDiv.appendChild(flyingElement);
